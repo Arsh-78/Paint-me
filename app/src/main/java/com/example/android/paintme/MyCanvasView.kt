@@ -1,7 +1,10 @@
 package com.example.android.paintme
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.*
+import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -10,7 +13,9 @@ import kotlin.math.abs
 
 private const val STROKE_WIDTH = 15f
 
-class MyCanvasView(context: Context) : View(context) {
+class MyCanvasView @JvmOverloads constructor(context: Context,
+                                             attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+    : View(context, attrs, defStyleAttr) {
     private lateinit var extraCanvas: Canvas
     private lateinit var extraBitmap: Bitmap
     private lateinit var frame: Rect
@@ -27,8 +32,15 @@ class MyCanvasView(context: Context) : View(context) {
     }
     private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
 
+    fun redDraw(string: String)
+    {
+     extraCanvas.drawColor(Color.parseColor(string))
+    }
+
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
+
         if (::extraBitmap.isInitialized) extraBitmap.recycle()
         extraBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
         extraCanvas = Canvas(extraBitmap)
@@ -43,6 +55,7 @@ class MyCanvasView(context: Context) : View(context) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
     }
+
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         motionTouchEventX = event.x
@@ -88,4 +101,8 @@ class MyCanvasView(context: Context) : View(context) {
         private var currentX = 0f
         private var currentY = 0f
     }
+
+
+
+
 }
